@@ -1,0 +1,17 @@
+# 1. Write a python program to take the inputs of two employees    EmployeeName    EmployeeSalary    and return its salary & employeename.   Add bonus of 10% of its salary and credit to his account.    Add emp1 and emp2 salaries with bonus and store it into salarydetails list
+
+2. 
+find the factorial of number 
+
+n=int(input("Enter the number to find its factorial:\n"))
+
+def factorial(n):
+    if n==1 or n==0:
+        return 1
+    print(n)
+    return n* factorial(n-1)
+
+result=factorial(n)
+print("Factorial of ",n,"is",result)
+
+3)write a python program to order the food in the swiggy display the menu for the user 1. Dosa2. Idli3. Pizza4. Burgers5. Chicken6. Biryani7. Ice Cream8. Place order#calling to swigy........example : press 1 to order Dosa and so onif i press 4. your order is been added to cartif i press 6. your order is been added to the cart if i press 8 your order is placed. items : list your total amount.
