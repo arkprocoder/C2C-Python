@@ -1,0 +1,32 @@
+# 1) write a program to find a string or a number is palindrome or not by taking input
+121-palindrome
+2344-not palindrome
+guvi- not palindrome
+mom – palindrome
+
+
+ 2) Write a program to create a basic calculator which can perform a)additionb)substractionc)divisiond)Multiplication
+ using lambda use inputs as params atleast 4
+
+ 3) linked list
+ 4) binary search
+ 5) bubble sort and merge sort
+
+
+ [1,2,3,4,5,6,7,8,9]
+
+search=8
+low=1
+high=9
+mid = 8/2
+mid=4
+
+[1,2,3,4] [5] [6,7,8,9],
+
+if mid[4]==search:
+   [5]
+elif mid[4]>search:
+     left
+    
+elif mid[4]<search:
+     right
