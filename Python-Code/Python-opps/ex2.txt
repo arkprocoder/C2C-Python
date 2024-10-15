@@ -1,0 +1,22 @@
+1. Write the program to pass these argument as *args and **kwargs
+   pass inputs as 1,2,3,4,5,6,7,8,9,10 as args
+   kwargs pass dictionary to a function and understand the flow
+2. listComprenshions
+3. Map, filters and reduce function
+4. if __name___ == '__main__
+
+Create a Python program demonstrating single-level inheritance by defining two classes:
+
+Class Vehicle:
+
+Attributes: brand, model, and year.
+Method: display_info() to print the vehicle’s details.
+Class Car (inherits from Vehicle):
+
+Additional Attribute: number_of_doors.
+Method: display_car_info() to print all the details of the car, including the number of doors.
+Write a program that:
+
+Creates an object of the Car class.
+Initializes it with appropriate values for the brand, model, year, and number of doors.
+Calls the display_car_info() method to show all details about the car.
