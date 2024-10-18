@@ -1,0 +1,51 @@
+
+Question 1:
+You are managing a Products table with the following columns: ProductID, ProductName, and Price. The ProductID is the primary key, and each product must have a unique identifier. Insert a new record for a product with the following details:
+
+ProductID: 3
+ProductName: "Tablet"
+Price: 12000.50
+Also, write a query to display all the products with a price greater than 15000.
+
+
+Question 2:
+You have a table called Orders with the following columns: OrderID, Quantity, and Price. The table has a constraint that ensures the Quantity must be greater than 0, and Price must be 0 or higher. Write an SQL query to insert an order with:
+
+OrderID: 5
+Quantity: 7
+Price: 350.75
+Additionally, write a query to find all orders where Quantity is more than 5 and the Price is less than 300.
+
+Question 3:
+You have a BusinessUsers table where the following columns exist: UserID, Username, Email, and Password. The table enforces the following rules:
+
+Username and Email should be unique.
+Username and Email cannot be NULL.
+Write a query to insert a new business user with the following details:
+
+UserID: 3
+Username: "john"
+Email: "john@gmail.com"
+Password: "john1234"
+Write an additional query to update the password for the user whose Username is "john" to "newpass2024".
+
+Question 4
+You are tasked with creating two tables: Customers and Orders. The Customers table will store information about the customers, and the Orders table will store details of the orders placed by these customers. There is a relationship between the two tables, where each order is associated with one customer.
+
+Write the SQL query to create the Customers table with the following columns:
+
+CustomerID (Primary Key)
+CustomerName (NOT NULL)
+Write the SQL query to create the Orders table with the following columns:
+
+OrderID (Primary Key)
+OrderDate (NOT NULL)
+CustomerID (Foreign Key referencing the Customers table)
+Insert the following data into the Customers table:
+
+CustomerID: 1, CustomerName: "Alice"
+CustomerID: 2, CustomerName: "Bob"
+Insert the following data into the Orders table:
+
+OrderID: 101, OrderDate: '2024-10-01', CustomerID: 1
+OrderID: 102, OrderDate: '2024-10-02', CustomerID: 2
