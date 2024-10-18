@@ -6,7 +6,7 @@ ProductID: 3
 ProductName: "Tablet"
 Price: 12000.50
 Also, write a query to display all the products with a price greater than 15000.
-
+______________________________________________________________________________________
 
 Question 2:
 You have a table called Orders with the following columns: OrderID, Quantity, and Price. The table has a constraint that ensures the Quantity must be greater than 0, and Price must be 0 or higher. Write an SQL query to insert an order with:
@@ -15,7 +15,7 @@ OrderID: 5
 Quantity: 7
 Price: 350.75
 Additionally, write a query to find all orders where Quantity is more than 5 and the Price is less than 300.
-
+______________________________________________________________________________________
 Question 3:
 You have a BusinessUsers table where the following columns exist: UserID, Username, Email, and Password. The table enforces the following rules:
 
@@ -28,7 +28,7 @@ Username: "john"
 Email: "john@gmail.com"
 Password: "john1234"
 Write an additional query to update the password for the user whose Username is "john" to "newpass2024".
-
+______________________________________________________________________________________
 Question 4
 You are tasked with creating two tables: Customers and Orders. The Customers table will store information about the customers, and the Orders table will store details of the orders placed by these customers. There is a relationship between the two tables, where each order is associated with one customer.
 
