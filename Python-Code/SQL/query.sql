@@ -211,3 +211,241 @@ ADD CONSTRAINT unique_full_name UNIQUE(FirstName,LastName);
 -- Jhon guard
 -- Cena Jhon
 -- Jhon Cena
+
+
+
+drop database c2c;
+
+
+CREATE TABLE Employees (
+    EmployeeID INT PRIMARY KEY,
+    FirstName VARCHAR(50),
+    LastName VARCHAR(50),
+    Age INT,
+    Department VARCHAR(50),
+    Salary DECIMAL(10, 2)
+);
+
+
+INSERT INTO Employees (EmployeeID, FirstName, LastName, Age, Department, Salary) VALUES
+(1, 'John', 'Doe', 30, 'HR', 50000.00),
+(2, 'Jane', 'Smith', 40, 'Engineering', 60000.00),
+(3, 'Alice', 'Johnson', 25, 'HR', 45000.00),
+(4, 'Bob', 'Brown', 50, 'Engineering', 70000.00),
+(5, 'Charlie', 'Davis', 35, 'Marketing', 55000.00),
+(6, 'Emily', 'White', 28, 'Engineering', 48000.00);
+
+
+select * from employees
+where (Department='HR' and age<35) or (Department='Engineering' and Salary>50000);
+
+
+Select * from employees
+order by Department ASC , Salary DESC;
+
+
+
+Select * from Employees
+Where age<=30
+or department='Marketing'
+ORDER BY Age ASC ,LastName asc;
+
+
+
+
+-- MIN 
+Select MIN(Age) AS yougestAge
+From Employees;
+
+Select MIN(Salary) AS minSal
+From Employees;
+
+Select MAX(Age) AS highAge
+From Employees;
+
+Select MAX(Salary) AS maxSal
+From Employees;
+
+
+Select MIN(salary) as MinSal , MAX(Salary) as maxSal
+from employees
+where department='Engineering';
+
+Select MAX(salary) - MIN(Salary) as salDIfference
+from employees;
+
+-- count
+
+Select COUNT(EmployeeID) AS totalemployess
+from employees;
+
+Select Department, COUNT(*) as NumberofEmployees
+from employees
+GROUP BY Department;
+
+
+-- AVG
+Select AVG(Salary) as Avgsalary
+from employees;
+
+Select AVG(age) as Avgage
+from employees;
+
+Select Department, AVG(Salary) AS AverageSalary
+from employees
+GROUP BY Department;
+
+-- SUM
+Select SUM(Salary) as TotalEmployeesSalary
+from employees;
+
+Select Department, SUM(Salary) AS TotalEmployeesSalary
+from employees
+GROUP BY department;
+
+
+
+CREATE TABLE Employees (
+    EmployeeID INT PRIMARY KEY,
+    FirstName VARCHAR(50),
+    LastName VARCHAR(50),
+    Age INT,
+    Department VARCHAR(50),
+    Salary DECIMAL(10, 2),
+    HireDate DATE
+);
+
+INSERT INTO Employees (EmployeeID, FirstName, LastName, Age, Department, Salary, HireDate) VALUES
+(1, 'John', 'Doe', 30, 'HR', 50000.00, '2018-01-15'),
+(2, 'Jane', 'Smith', 40, 'Engineering', 60000.00, '2017-04-23'),
+(3, 'Alice', 'Johnson', 25, 'HR', 45000.00, '2019-03-11'),
+(4, 'Bob', 'Brown', 50, 'Engineering', 70000.00, '2016-11-30'),
+(5, 'Charlie', 'Davis', 35, 'Marketing', 55000.00, '2018-07-19'),
+(6, 'Emily', 'White', 28, 'Engineering', 48000.00, '2020-08-05');
+
+
+Select Department, Count(*) as noofemployees
+from employees
+group by department;
+
+
+Select Department, Count(*) as noofemployees
+from employees
+group by department
+Having count(*)>1;
+
+
+
+
+
+INSERT INTO Employees (EmployeeID, FirstName, LastName, Age, Department, Salary, HireDate) VALUES
+(7, 'John1', 'Doe1', 30, 'HR', 50000.00, '2018-01-15'),
+(8, 'Jane1', 'Smith1', 40, 'Engineering', 60000.00, '2017-04-23');
+
+
+SELECT Department,Age, Count(*) as noofemployees
+FROM employees
+GROUP BY department,Age;
+
+
+-- Find the number of employees hired each year.
+Select YEAR(HireDate) as HiredYear , Count(*) as numberofemployees
+from employees
+group by YEAR(HireDate);
+
+
+
+CREATE TABLE Customers (
+    CustomerID INT PRIMARY KEY,
+    FirstName VARCHAR(50),
+    LastName VARCHAR(50),
+    Email VARCHAR(100),
+    Country VARCHAR(50)
+);
+
+INSERT INTO Customers (CustomerID, FirstName, LastName, Email, Country) VALUES
+(1, 'John', 'Doe', 'john.doe@example.com', 'INDIA'),
+(2, 'Jane', 'Smith', 'jane.smith@example.com', 'Canada'),
+(3, 'Alice', 'Johnson', 'alice.johnson@example.net', 'UK'),
+(4, 'Bob', 'Brown', 'bob.brown@example.org', 'INDIA'),
+(5, 'Charlie', 'Davis', 'charlie.davis@example.com', 'Australia'),
+(6, 'Emily', 'White', 'emily.white@example.com', 'INDIA');
+
+
+Select * from Customers
+where FirstName LIKE 'J%';
+
+
+Select * from Customers
+where FirstName LIKE '%b';
+
+
+Select * from Customers
+where FirstName LIKE '%';
+
+Select * from Customers
+where FirstName LIKE '%i%';
+
+
+Select * from Customers
+where FirstName LIKE '%____l%';
+
+select * from Customers
+where email Like '%.com';
+
+
+select * from Customers
+where email NOT Like '%.com';
+
+
+-- IN operators
+-- The SQL IN operator is used to filter the result set based on a list of specified values. It is a shorthand for multiple OR conditions. Let's explore the IN operator in depth with various examples and scenarios.
+
+CREATE TABLE Orders (
+    OrderID INT PRIMARY KEY,
+    CustomerID INT,
+    OrderDate DATE,
+    Status VARCHAR(20),
+    TotalAmount DECIMAL(10, 2)
+);
+
+INSERT INTO Orders (OrderID, CustomerID, OrderDate, Status, TotalAmount) VALUES
+(1, 101, '2023-01-15', 'Shipped', 150.00),
+(2, 102, '2023-02-20', 'Pending', 200.00),
+(3, 101, '2023-03-11', 'Cancelled', 50.00),
+(4, 103, '2023-04-10', 'Shipped', 300.00),
+(5, 104, '2023-05-05', 'Pending', 100.00),
+(6, 105, '2023-06-25', 'Shipped', 250.00);
+
+
+Select * from Orders 
+where Status='Pending' or Status='Shipped';
+
+Select * from Orders 
+where Status IN ('Shipped','Pending');
+
+
+Select * from Orders 
+where Status NOT IN ('Shipped','Pending');
+
+-- IN- Subquieries
+--  Find all orders where the customer has another order with 'Cancelled' status.
+Select * from orders
+where CustomerID IN (Select CustomerID from orders where status='Cancelled');
+
+Select * from orders
+where CustomerID IN ('101');
+
+
+
+Select * from orders 
+where OrderDate BETWEEN '2023-01-01' AND '2023-05-01';
+
+Select * from orders 
+where OrderDate NOT BETWEEN '2023-01-01' AND '2023-03-01';
+
+
+10 - 20
+11,12,13,14,15,16,17,18,19
+
+10 and 20
