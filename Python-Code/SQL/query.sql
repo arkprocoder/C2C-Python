@@ -449,3 +449,155 @@ where OrderDate NOT BETWEEN '2023-01-01' AND '2023-03-01';
 11,12,13,14,15,16,17,18,19
 
 10 and 20
+
+
+Create Table Department(
+    deptId int not NUll Auto_Increment,
+    deptName varchar(40) Not Null,
+    Primary Key (deptId)
+);
+
+Insert Into Department (deptName) Values ('HR');
+Insert Into Department (deptName) Values ('Finance');
+Insert Into Department (deptName) Values ('Digital Solution');
+Insert Into Department (deptName) Values ('Developer');
+Insert Into Department (deptName) Values ('Accounts');
+Insert Into Department (deptName) Values ('Frontend');
+Insert Into Department (deptName) Values ('Backend');
+
+Create Table Employee(
+    empID int Not null Auto_Increment,
+    employeeName varchar(30) not null,
+    employeeSalary Bigint,
+    employeePhoneNumber Bigint Not Null,
+    deptId int,
+    Primary Key (empID),
+    Foreign key (deptid) REFERENCES Department(deptId)
+
+);
+
+Insert Into Employee (employeeName,employeeSalary,employeePhoneNumber,deptId) Values ('Anees',25000,9874589654,3);
+Insert Into Employee (employeeName,employeeSalary,employeePhoneNumber,deptId) Values ('Amrutha',55000,9874544654,4);
+Insert Into Employee (employeeName,employeeSalary,employeePhoneNumber,deptId) Values ('Aadithyaa',35000,8884589654,1);
+Insert Into Employee (employeeName,employeeSalary,employeePhoneNumber,deptId) Values ('Meghana',65000,9995559654,2);
+Insert Into Employee (employeeName,employeeSalary,employeePhoneNumber,deptId) Values ('Akhil',25000,9874589994,1);
+Insert Into Employee (employeeName,employeeSalary,employeePhoneNumber,deptId) Values ('Vinod',45000,9872589654,3);
+Insert Into Employee (employeeName,employeeSalary,employeePhoneNumber) Values ('Aneeka',85000,9800089654);
+Insert Into Employee (employeeName,employeeSalary,employeePhoneNumber,deptId) Values ('Priyanka',75000,7774589654,3);
+Insert Into Employee (employeeName,employeeSalary,employeePhoneNumber,deptId) Values ('Naz',175000,9974589654,2);
+Insert Into Employee (employeeName,employeeSalary,employeePhoneNumber,deptId) Values ('rajath',275000,9999589654,1);
+Insert Into Employee (employeeName,employeeSalary,employeePhoneNumber,deptId) Values ('rahul',5000,99995812354,5);
+Insert Into Employee (employeeName,employeeSalary,employeePhoneNumber) Values ('rani',75000,9999584554);
+
+-- Insert Into Employee (employeeName,employeeSalary,employeePhoneNumber,deptId) Values ('a',175000,9999884554,9);
+-- Insert Into Employee (employeeName,employeeSalary,employeePhoneNumber,deptId) Values ('b'275000,9999774554,10);
+
+-- Inner Join
+
+-- Select table1.column_name, table2.column_name
+-- from table1
+-- Inner join table2
+-- on tabl1.columnname=table2.column_name
+
+
+Select Employee.empID, Employee.employeeName,Employee.employeeSalary,Department.deptName
+from Employee
+Inner Join Department
+ON Employee.deptId=Department.deptId;
+
+
+-- Left Join
+-- Select columns
+-- from table1
+-- Left join table2
+-- on tabl1.columnname=table2.column_name
+
+
+Select emp.empID, emp.employeeName, emp.employeePhoneNumber,emp.employeeSalary,dpt.deptName
+from Employee as emp
+Left join department as dpt
+ON emp.deptId=dpt.deptId;
+
+
+-- Right Join
+
+-- Select columns
+-- from table1
+-- Right join table2
+-- on tabl1.columnname=table2.column_name
+
+Select emp.empID, emp.employeeName, emp.employeePhoneNumber,emp.employeeSalary,dpt.deptName
+from Employee as emp
+Right join department as dpt
+ON emp.deptId=dpt.deptId;
+
+
+-- full join
+
+-- Select emp.empID, emp.employeeName, dept.deptName
+-- from employee emp
+-- FULL JOIN Department dept
+-- ON emp.deptId=dept.deptId;
+
+-- UNION | LEFT | RIGHT
+
+
+Select emp.empID, emp.employeeName, dept.deptName
+from employee emp
+LEFT JOIN Department dept
+on emp.deptId=dept.deptId
+UNION
+Select emp.empID, emp.employeeName, dept.deptName
+from employee emp
+RIGHT JOIN Department dept
+on emp.deptId=dept.deptId;
+
+customers
++----+-------------+-----------+
+| id | customer_id | name      |
++----+-------------+-----------+
+| 1  | C001        | John Doe  |
+| 2  | C002        | Jane Smith|
+| 3  | C003        | Emily Clark|
++----+-------------+-----------+
+
+orders
++----+-------------+------------+-------+
+| id | customer_id | order_date | total |
++----+-------------+------------+-------+
+| 1  | C001        | 2024-09-15 | 100   |
+| 2  | C003        | 2024-10-01 | 200   |
+| 3  | C001        | 2024-10-10 | 150   |
++----+-------------+------------+-------+
+
+1. Write a SQL query to retrieve each customer’s name and their total orders (if any). Ensure that customers who don’t have orders are also included.
+
+
+
+
+SELECT Customers.name, Orders.total
+FROM Customers
+LEFT JOIN Orders
+ON Customers.customer_id = Orders.customer_id;
+
+
+
+students
++----+-----------+------+
+| id | name      | age  |
++----+-----------+------+
+| 1  | Alice     | 21   |
+| 2  | Bob       | 22   |
+| 3  | Charlie   | 20   |
++----+-----------+------+
+
+Grades
+
++----+------------+-------+
+| id | student_id | grade |
++----+------------+-------+
+| 1  | 1          | A     |
+| 2  | 2          | B     |
+| 3  | 3          | A     |
++----+------------+-------+
+Write a query to retrieve the names of all students along with their grades. Ensure that students only with  grades  included in the result.
