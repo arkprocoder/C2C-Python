@@ -27,3 +27,11 @@ create folder->main.py->add the code -> run the pprogram
 
 HTML->class -> CSS is loaded from cdn based on class name
 HTML->id-> Javascript is loaded from cdn based on ids
+
+
+<!-- 
+below command for installations
+
+ -->
+
+pip install -r requirements.txt
