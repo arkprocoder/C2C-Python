@@ -4,9 +4,17 @@ python -m virtulenv myenv
 
 myenv\Scripts\activate
 
-pip install flask
+pip install -r requirements.txt
 
 python main.py
+
+
+
+
+// to pack the modules in requirements.txt file 
+
+pip freeze >requirements.txt
+
 
 
 create a new folder ->create main.py add code 
