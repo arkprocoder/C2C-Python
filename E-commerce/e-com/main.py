@@ -4,7 +4,7 @@ from flask.globals import request,session
 from flask_login import login_user,login_manager,UserMixin,LoginManager,login_required,logout_user
 from flask_login import current_user
 from werkzeug.security import generate_password_hash,check_password_hash
-
+from flask import flash
 
 
 
@@ -81,16 +81,18 @@ def signup():
         print(firstName,lastName,email,mobile,password,confirmpassword)
 
         if password!=confirmpassword:
-            return "Password is not getting matched"
+            flash("Password is not getting matched","warning")
+            return redirect(url_for("signup"))
         
         fetchemail=Signup.query.filter_by(email=email).first()
         fetchphone=Signup.query.filter_by(mobile_number=mobile).first()
         if fetchemail or fetchphone:
-            return "User Exist already"
-            # return redirect(url_for("signup"))
+            flash("User Exist already","danger")
+            return redirect(url_for("signup"))
 
         if len(mobile)!=10:
-            return "Please Enter 10 digit number"
+            flash("Please Enter 10 digit number","warning")
+            return redirect(url_for("signup"))
 
 
         gen_pass=generate_password_hash(password)
@@ -104,9 +106,10 @@ def signup():
         query=f"INSERT into `signup` (`first_name`,`last_name`,`email`,`mobile_number`,`password`) VALUES ('{firstName}','{lastName}','{email}','{mobile}','{gen_pass}')"
         with db.engine.begin() as conn:
             conn.exec_driver_sql(query)
+            flash("Signup is Success! Please Login","success")
             return redirect(url_for("login"))
       
-    print("Get request is called")
+
     return render_template('signup.html')
 
 
@@ -118,8 +121,10 @@ def login():
         user=Signup.query.filter_by(email=email).first()
         if user and check_password_hash(user.password,password):
             login_user(user) 
+            flash("Login Success! Welcome","success")
             return render_template("index.html")
         else:
+            flash("Invalid Credentials","danger")
             return render_template("login.html")
     return render_template('login.html')
 
@@ -129,6 +134,7 @@ def login():
 @login_required
 def logout():
     logout_user()
+    flash("Logout Success!","success")
     return  render_template('login.html')
 
 app.run(debug=True)
