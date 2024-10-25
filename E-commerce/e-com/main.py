@@ -5,8 +5,8 @@ from flask_login import login_user,login_manager,UserMixin,LoginManager,login_re
 from flask_login import current_user
 from werkzeug.security import generate_password_hash,check_password_hash
 from flask import flash
-
-
+from werkzeug.utils import secure_filename
+import os
 
 local_server=True
 app = Flask(__name__)
@@ -21,6 +21,12 @@ login_manager.login_view='login'
 # app.config['SQLALCHEMY_DATABASE_URI']='mysql://username:password@localhost/databasename'
 app.config['SQLALCHEMY_DATABASE_URI']='mysql+pymysql://root:@localhost/c2c?ssl_disabled=True'
 db=SQLAlchemy(app)
+
+
+# configuration for handling files
+app.config['UPLOAD_FOLDER']='static/uploads/'
+app.config['ALLOWED_EXTENSIONS']={'png','jpg','jpeg','gif'}
+app.config['MAX_CONTENT_LENGTH']=16*1024*1024 #16mb max upload size
 
 
 
@@ -42,10 +48,21 @@ class Signup(UserMixin,db.Model):
     email=db.Column(db.String(50),unique=True)
     mobile_number=db.Column(db.String(12),unique=True)
     password=db.Column(db.String(2000))
+    profileimage=db.Column(db.String(500))
 
     def get_id(self):
         return self.user_id
 
+
+class Contact(db.Model):
+    contact_id=db.Column(db.Integer,primary_key=True)
+    email=db.Column(db.String(50))
+    description=db.Column(db.String(500))
+
+
+
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.',1)[1].lower() in app.config['ALLOWED_EXTENSIONS']
 
 
 @app.route("/test")
@@ -64,9 +81,17 @@ def home():
         return redirect(url_for('login'))
     return render_template('index.html')
 
-@app.route("/contact") #http://127.0.0.1:5000/contact
+@app.route("/contact",methods=['GET','POST']) #http://127.0.0.1:5000/contact
 def contact():
-    return render_template('contact.html')
+    if request.method=="POST":
+        email=request.form.get("email")
+        desc=request.form.get("desc")
+        query=Contact(email=email,description=desc)
+        db.session.add(query)
+        db.session.commit()
+        flash("We will get back to you soon..","success")
+        return render_template("contact.html")
+    return render_template("contact.html")
 
 #http://127.0.0.1:5000/signup
 @app.route("/signup",methods=['GET','POST'])
@@ -129,12 +154,44 @@ def login():
     return render_template('login.html')
 
 
-
 @app.route('/logout')
 @login_required
 def logout():
     logout_user()
     flash("Logout Success!","success")
     return  render_template('login.html')
+
+
+@app.route("/profile", methods=['GET','POST'])
+@login_required
+def profile():
+    userdata=Signup.query.filter_by(email=current_user.email).first()
+    print(userdata)
+    return render_template('profile.html',userdata=userdata)
+
+
+@app.route("/uploadprofile",methods=['POST'])
+@login_required
+def uploadprofile():
+    if request.method=="POST":
+        file=request.files['profilepic']
+        if file and allowed_file(file.filename):
+            # save the file in the uploads folder
+            filename=secure_filename(file.filename)
+            file.save(os.path.join(app.config['UPLOAD_FOLDER'],filename))
+
+            query=f"UPDATE `signup` SET `profileimage`='{filename}' WHERE `signup`.`email`='{current_user.email}'"
+
+            with db.engine.begin() as conn:
+                conn.exec_driver_sql(query)
+                flash("Profile Uploaded Successfully","info")
+                return redirect(url_for("profile"))
+    else:
+        return render_template("profile.html")
+
+
+
+
+
 
 app.run(debug=True)

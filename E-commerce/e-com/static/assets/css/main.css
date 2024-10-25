@@ -1,16 +1,4 @@
-/**
-* Template Name: Vesperr
-* Template URL: https://bootstrapmade.com/vesperr-free-bootstrap-template/
-* Updated: Aug 07 2024 with Bootstrap v5.3.3
-* Author: BootstrapMade.com
-* License: https://bootstrapmade.com/license/
-*/
 
-/*--------------------------------------------------------------
-# Font & Color Variables
-# Help: https://bootstrapmade.com/color-system/
---------------------------------------------------------------*/
-/* Fonts */
 :root {
   --default-font: "Roboto",  system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
   --heading-font: "Raleway",  sans-serif;
@@ -1718,4 +1706,20 @@ section,
 --------------------------------------------------------------*/
 .starter-section {
   /* Add your styles here */
+}
+
+.btnclr{
+    color: var(--contrast-color) !important;
+    background: var(--accent-color) !important;
+    font-size: 14px !important;
+    padding: 8px 25px !important;
+  
+    border-radius: 50px !important;
+    transition: 0.3s !important;
+}
+
+.img-fluid-profile {
+  max-width: 50% !important;
+  height: auto;
+  border-radius: 50% !important;
 }
