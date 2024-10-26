@@ -83,18 +83,27 @@
 
       <a class="btn-getstarted" href="/contact">Contact</a>
 
+      {% if current_user.isAdmin=='True' %}
+      <a class="btn-getstarted" href="/admin">Admin</a>
+      {% endif %}
+
     </div>
   </header>
 
   <main class="main">
 
-    <!-- Hero Section -->
-    <section id="hero" class="hero section">
 
+
+    
      {% block corousel %}
      {% endblock corousel %}
+  
 
-    </section><!-- /Hero Section -->
+
+
+     {% block body %}
+     {% endblock body %}
+
 
 
 

@@ -49,6 +49,7 @@ class Signup(UserMixin,db.Model):
     mobile_number=db.Column(db.String(12),unique=True)
     password=db.Column(db.String(2000))
     profileimage=db.Column(db.String(500))
+    isAdmin=db.Column(db.String(10))
 
     def get_id(self):
         return self.user_id
@@ -59,6 +60,18 @@ class Contact(db.Model):
     email=db.Column(db.String(50))
     description=db.Column(db.String(500))
 
+
+
+
+class Product(db.Model):
+    id=db.Column(db.Integer,primary_key=True)
+    name=db.Column(db.String(100),nullable=False)
+    price=db.Column(db.String(10),nullable=False)
+    category=db.Column(db.String(100),nullable=False)
+    description=db.Column(db.String(500))
+    stock=db.Column(db.Integer,default=0,nullable=False)
+    image=db.Column(db.String(100),nullable=True)
+    email=db.Column(db.String(100),nullable=False)
 
 
 def allowed_file(filename):
@@ -79,7 +92,9 @@ def test():
 def home():
     if not current_user.is_authenticated:
         return redirect(url_for('login'))
-    return render_template('index.html')
+    
+    products=Product.query.all()
+    return render_template('index.html',products=products)
 
 @app.route("/contact",methods=['GET','POST']) #http://127.0.0.1:5000/contact
 def contact():
@@ -191,7 +206,56 @@ def uploadprofile():
 
 
 
+@app.route("/admin")
+def admin():
+    print("checking if admin", current_user.isAdmin)
+    if not current_user.is_authenticated and not current_user.isAdmin:
+        return redirect(url_for('login'))
+    products=Product.query.all()
+    return render_template('admin.html',products=products)
 
+@app.route("/addproduct",methods=['POST'])
+@login_required
+def addproduct():
+    if not current_user.is_authenticated and not current_user.isAdmin:
+        return redirect(url_for('login'))
+    if request.method=="POST":
+        email=request.form.get('email')
+        name=request.form.get('pname')
+        stock=request.form.get('stock')
+        desc=request.form.get('desc')
+        price=request.form.get('price')
+        category=request.form.get('category')
+        file=request.files['productpic']
+
+        if file and allowed_file(file.filename):
+            # save the file in the uploads folder
+            filename=secure_filename(file.filename)
+            file.save(os.path.join(app.config['UPLOAD_FOLDER'],filename))
+
+            product=Product(name=name,price=price,category=category,description=desc,stock=stock,image=filename,email=current_user.email)
+            db.session.add(product)
+            db.session.commit()
+            flash("Product Added Successfully","success")
+            return redirect(url_for('admin'))
+
+           
+    else:
+        return render_template("profile.html")
+
+@app.route("/delete_product/<int:product_id>", methods=['POST', 'GET'])
+@login_required
+def delete_product(product_id):
+    # Find the product by its ID
+    product = Product.query.get_or_404(product_id)
+    
+    # Delete the product from the database
+    db.session.delete(product)
+    db.session.commit()
+    
+    # Show a success message and redirect back to the admin panel
+    flash("Product deleted successfully!", "success")
+    return redirect(url_for('admin'))
 
 
 app.run(debug=True)
