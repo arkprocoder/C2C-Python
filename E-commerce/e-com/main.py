@@ -7,6 +7,8 @@ from werkzeug.security import generate_password_hash,check_password_hash
 from flask import flash
 from werkzeug.utils import secure_filename
 import os
+from flask import jsonify
+
 
 local_server=True
 app = Flask(__name__)
@@ -162,7 +164,8 @@ def login():
         if user and check_password_hash(user.password,password):
             login_user(user) 
             flash("Login Success! Welcome","success")
-            return render_template("index.html")
+            products=Product.query.all()
+            return render_template('index.html',products=products)
         else:
             flash("Invalid Credentials","danger")
             return render_template("login.html")
@@ -256,6 +259,58 @@ def delete_product(product_id):
     # Show a success message and redirect back to the admin panel
     flash("Product deleted successfully!", "success")
     return redirect(url_for('admin'))
+
+
+
+@app.route("/editproduct/<int:id>", methods=['POST', 'GET'])
+def editProduct(id):
+    if not current_user.is_authenticated or not current_user.isAdmin:
+        return jsonify({'error': 'Unauthorized access'}), 403
+    productdata=Product.query.filter_by(id=id).first()
+    if not productdata:
+        return jsonify({'error': 'Product not found'}), 404
+
+    product_data_dict = {
+        'id': productdata.id,
+        'name': productdata.name,
+        'price': productdata.price,
+        'category':productdata.category,
+        'description':productdata.description,
+        'stock':productdata.stock,
+        'image':productdata.image,
+        'email':productdata.email
+
+    }
+
+    return jsonify(product_data_dict)
+
+
+
+@app.route("/update_product/<int:id>", methods=['POST'])
+def updateProduct(id):
+    if not current_user.is_authenticated or not current_user.isAdmin:
+        return jsonify({'error': 'Unauthorized access'}), 403
+
+    product = Product.query.filter_by(id=id).first()
+    
+    # Check if product exists
+    if not product:
+        return jsonify({'error': 'Product not found'}), 404
+
+    # Update product fields with form data
+    data = request.form
+    product.name = data.get('pname')
+    product.price = data.get('price')
+    product.category = data.get('category')
+    product.description = data.get('desc')
+    product.stock = data.get('stock')
+
+    # Save the updated product to the database
+    db.session.commit()
+
+    return jsonify({'message': 'Product updated successfully'})
+
+
 
 
 app.run(debug=True)

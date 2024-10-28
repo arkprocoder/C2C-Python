@@ -1723,3 +1723,13 @@ section,
   height: auto;
   border-radius: 50% !important;
 }
+
+.hover-effect {
+  animation: cartHover 0.3s ease-in-out;
+  color: #ff4081; /* Customize as needed */
+}
+
+@keyframes cartHover {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.2); }
+}
