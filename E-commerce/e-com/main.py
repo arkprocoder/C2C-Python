@@ -361,7 +361,7 @@ def placeorder():
                     return redirect(url_for('checkout'))
         
         db.session.commit()
-        order=Orders(name=name,email=current_user.email,state=state,city=city,pincode=pincode,address=address,orderedproducts=productdetails,totalprice=totalprice)
+        order=Orders(name=name,email=current_user.email,state=state,city=city,pincode=pincode,address=address,orderedproducts=productdetails,totalprice=totalprice,isDelivered=False)
         db.session.add(order)
         db.session.commit()
         flash("Order has been placed successfully..","success")
