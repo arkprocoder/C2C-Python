@@ -6,7 +6,7 @@ from flask_login import current_user
 from werkzeug.security import generate_password_hash,check_password_hash
 from flask import flash
 from werkzeug.utils import secure_filename
-import os
+import os,json
 from flask import jsonify
 
 
@@ -74,6 +74,20 @@ class Product(db.Model):
     stock=db.Column(db.Integer,default=0,nullable=False)
     image=db.Column(db.String(100),nullable=True)
     email=db.Column(db.String(100),nullable=False)
+
+class Orders(db.Model):
+    order_id=db.Column(db.Integer,primary_key=True)
+    name=db.Column(db.String(20),nullable=False)
+    email=db.Column(db.String(20),nullable=False)
+    state=db.Column(db.String(20),nullable=False)
+    city=db.Column(db.String(20),nullable=False)
+    pincode=db.Column(db.String(20),nullable=False)
+    address=db.Column(db.String(100),nullable=False)
+    orderedproducts=db.Column(db.String(500),nullable=False)
+    totalprice=db.Column(db.String(10),nullable=False)
+    isDelivered=db.Column(db.String(20))
+ 
+    
 
 
 def allowed_file(filename):
@@ -309,6 +323,52 @@ def updateProduct(id):
     db.session.commit()
 
     return jsonify({'message': 'Product updated successfully'})
+
+
+
+@app.route("/checkout")
+def checkout():
+    if not current_user.is_authenticated and not current_user.isAdmin:
+        return redirect(url_for('login'))
+    return render_template('checkout.html')
+
+
+@app.route("/placeorder",methods=['POST','GET'])
+def placeorder():
+    if not current_user.is_authenticated and not current_user.isAdmin:
+        return redirect(url_for('login'))
+    
+    if request.method=="POST":
+        name=request.form.get('name')
+        city=request.form.get('city')
+        state=request.form.get('state')
+        pincode=request.form.get('pincode')
+        address=request.form.get('address')
+        productdetails=request.form.get('product_details')
+        totalprice=request.form.get('total_price')
+        product_details_list=json.loads(productdetails) if productdetails else []
+
+        for productdetail in product_details_list:
+            product_id=productdetail['id']
+            quantity_ordered=productdetail['quantity']
+
+            product=Product.query.get(product_id)
+            if product:
+                if product.stock>=quantity_ordered:
+                    product.stock-=quantity_ordered
+                else:
+                    flash(f"Insufficient stock for {product.name}, Only {product.stock} is available ")
+                    return redirect(url_for('checkout'))
+        
+        db.session.commit()
+        order=Orders(name=name,email=current_user.email,state=state,city=city,pincode=pincode,address=address,orderedproducts=productdetails,totalprice=totalprice)
+        db.session.add(order)
+        db.session.commit()
+        flash("Order has been placed successfully..","success")
+        return redirect(url_for('checkout'))
+    return render_template('orders.html')
+
+
 
 
 
