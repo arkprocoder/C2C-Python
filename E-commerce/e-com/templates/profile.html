@@ -7,8 +7,7 @@ block corousel %}
       class="col-lg-6 order-2 order-lg-1 d-flex flex-column justify-content-center"
     >
       {% include "messages.html" %}
-
-      <form action="/uploadprofile" method="post" enctype="multipart/form-data">
+ <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
         <div class="input-group">
           <input
             type="file"

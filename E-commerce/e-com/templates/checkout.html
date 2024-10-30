@@ -38,6 +38,7 @@ body %}
         method="POST"
         onsubmit="prepareOrderData()"
       >
+       <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
         <div class="mb-3">
           <label for="name" class="form-label">Full Name</label>
           <input

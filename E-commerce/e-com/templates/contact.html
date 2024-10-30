@@ -21,7 +21,7 @@
         
 
             <form action="/contact" method="post">
-
+ <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                 <div class="form-group">
                     <input class="form-control mb-2 p-3" type="email" name="email" placeholder="Enter  Email" required>
                 </div>

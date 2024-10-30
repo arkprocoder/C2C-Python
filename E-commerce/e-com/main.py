@@ -8,12 +8,14 @@ from flask import flash
 from werkzeug.utils import secure_filename
 import os,json
 from flask import jsonify
+from datetime import datetime
+from flask_wtf import CSRFProtect
 
 
 local_server=True
 app = Flask(__name__)
 app.secret_key="%^%@&@*&()@ANEES!#@#@"
-
+csrf = CSRFProtect(app)
 
 login_manager=LoginManager(app)
 login_manager.login_view='login'
@@ -86,7 +88,7 @@ class Orders(db.Model):
     orderedproducts=db.Column(db.String(500),nullable=False)
     totalprice=db.Column(db.String(10),nullable=False)
     isDelivered=db.Column(db.String(20))
- 
+    timeStamp=db.Column(db.DateTime, default=datetime.utcnow)
     
 
 
@@ -365,12 +367,56 @@ def placeorder():
         db.session.add(order)
         db.session.commit()
         flash("Order has been placed successfully..","success")
-        return redirect(url_for('checkout'))
+        return redirect(url_for('view_orders'))
     return render_template('orders.html')
 
 
 
+@app.route("/orders", methods=['GET'])
+def view_orders():
+    if not current_user.is_authenticated:
+        return redirect(url_for('login'))
+    
+    # Fetch the orders associated with the logged-in user
+    user_orders = Orders.query.filter_by(email=current_user.email).all()
+    for order in user_orders:
+        order.orderedproducts = json.loads(order.orderedproducts) if order.orderedproducts else []
+    print(user_orders)
+    print(type(user_orders))
+    # Render orders.html with the user's orders
+    return render_template('orders.html', orders=user_orders)
 
 
+@app.route("/deleteorder/<int:order_id>", methods=['POST'])
+def delete_order(order_id):
+    if not current_user.is_authenticated:
+        return redirect(url_for('login'))
+    
+    # Fetch the order by ID
+    order = Orders.query.get(order_id)
+    if order:
+        db.session.delete(order)
+        db.session.commit()
+        flash("Order deleted successfully.", "success")
+        return jsonify({"success": True, "message": "Order deleted."}), 200
+    else:
+        return jsonify({"success": False, "message": "Order not found."}), 404
+
+
+
+@app.route('/api/products', methods=['GET'])
+def search_products():
+    # Get the search query from the request parameters
+    query = request.args.get('query', '').strip()
+    
+    # Perform a case-insensitive search if there's a query
+    if query:
+        matching_products = Product.query.filter(Product.name.ilike(f'%{query}%')).all()
+    else:
+        matching_products = Product.query.all()  # Return all products if no query is provided
+
+    # Convert the results to a list of dictionaries to jsonify
+    products_list = [{'id': product.id, 'name': product.name} for product in matching_products]
+    return jsonify(products_list)
 
 app.run(debug=True)

@@ -7,6 +7,7 @@ body %}
       {% include "messages.html" %}
       <h2>Add Products</h2>
       <form action="/addproduct" method="post" enctype="multipart/form-data">
+       <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
         <div class="form-group">
           <input
             class="form-control mb-2 p-3"
@@ -272,8 +273,12 @@ body %}
     try {
       const response = await fetch(`/update_product/${productId}`, {
         method: "POST",
-        body: formData
+        body: formData,
+        headers: {
+      'X-CSRFToken': '{{ csrf_token() }}'  // Include CSRF token in the header
+    }
       });
+      
       
       if (!response.ok) {
         throw new Error("Failed to update product");
