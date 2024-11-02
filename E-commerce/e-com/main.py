@@ -437,7 +437,14 @@ def search_products():
         matching_products = Product.query.all()  # Return all products if no query is provided
 
     # Convert the results to a list of dictionaries to jsonify
-    products_list = [{'id': product.id, 'name': product.name} for product in matching_products]
+    products_list = [{
+            'id': product.id,
+            'name': product.name,
+            'description': product.description,
+            'price': product.price,
+            'image': product.image
+        } for product in matching_products]
+
     return jsonify(products_list)
 
 app.run(debug=True)

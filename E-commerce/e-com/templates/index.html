@@ -47,7 +47,7 @@ corousel %}
             id="product-search-input"
             oninput="fetchMatchingProducts(this.value)"
           />
-          <button class="btn btn-outline-dark" type="submit">Search</button>
+
 
           <!-- Dropdown for displaying matching products -->
           <ul
@@ -62,6 +62,16 @@ corousel %}
     </nav>
   </div>
   <div class="container">
+    <div
+      class="isotope-layout"
+      data-default-filter="*"
+      data-layout="masonry"
+      data-sort="original-order"
+    >
+      <div id="product-results" class="row gy-4"></div>
+    </div>
+  </div>
+  <div class="container"  id="mainproducts">
     <div
       class="isotope-layout"
       data-default-filter="*"
@@ -248,46 +258,89 @@ corousel %}
     document.getElementById("cart-count").innerText = `(${count})`;
   }
 
-
   async function fetchMatchingProducts(query) {
-  const dropdown = document.getElementById('search-dropdown');
-  dropdown.innerHTML = '';  // Clear previous results
-  
-  // Show dropdown only if there's a query
-  if (query.trim() === '') {
-    dropdown.style.display = 'none';
-    return;
-  }
+    const resultsContainer = document.getElementById("product-results");
+    const dropdown = document.getElementById("search-dropdown");
+    const maindiv = document.getElementById("mainproducts");
 
-  try {
-    const response = await fetch(`/api/products?query=${encodeURIComponent(query)}`);
-    if (!response.ok) throw new Error("Failed to fetch products");
+    // Clear previous results and hide dropdown
+    resultsContainer.innerHTML = "";
+    dropdown.innerHTML = "";
+    dropdown.style.display = "none";
 
-    const products = await response.json();
+    // Show dropdown only if there's a query
+if (query.trim() === "") {
+        maindiv.style.display = "block";
+        return;
+    }
     
-    // Populate dropdown with matching products
-    products.forEach(product => {
-      const listItem = document.createElement('li');
-      listItem.classList.add('dropdown-item');
-      listItem.textContent = product.name;
-      
-      // On click, set the input field to selected product name and hide dropdown
-      listItem.onclick = () => {
-        document.getElementById('product-search-input').value = product.name;
-        dropdown.style.display = 'none';
-      };
+ 
 
-      dropdown.appendChild(listItem);
-    });
 
-    // Show dropdown if there are matching products
-    dropdown.style.display = products.length ? 'block' : 'none';
 
-  } catch (error) {
-    console.error('Error fetching products:', error);
+    try {
+      const response = await fetch(
+        `/api/products?query=${encodeURIComponent(query)}`
+      );
+      if (!response.ok) throw new Error("Failed to fetch products");
+
+      const products = await response.json();
+      console.log(products);
+      maindiv.style.display = "none";
+
+      // Display matching products in the results container
+      if (products.length) {
+        products.forEach((product) => {
+          const productCard = document.createElement("div");
+          productCard.classList.add(
+            "col-lg-4",
+            "col-md-6",
+            "portfolio-item",
+            `filter-${product.category}`
+          );
+
+          productCard.innerHTML = `
+            <div class="portfolio-content h-100">
+              <img src="/static/uploads/${product.image}" class="img-fluid" alt="${product.name}" />
+              <div class="portfolio-info">
+                <h4>${product.name}</h4>
+                <p>${product.description}</p>
+                <h6 class="text-white">Price : ${product.price}</h6>
+                <a href="/static/uploads/${product.image}" title="${product.name}" data-gallery="portfolio-gallery-${product.category}" class="glightbox preview-link">
+                  <i class="bi bi-zoom-in"></i>
+                </a>
+                <button id="add-to-cart-${product.id}" class="btn btn-primary add-to-cart" onclick="addToCart('${product.id}', '${product.name}', '${product.price}', '${product.image}', ${product.stock})">
+                  Add to Cart
+                </button>
+              </div>
+            </div>`;
+
+          resultsContainer.appendChild(productCard);
+
+          // Optionally, also add items to dropdown
+          const dropdownItem = document.createElement("li");
+          dropdownItem.classList.add("dropdown-item");
+          dropdownItem.textContent = product.name;
+          dropdownItem.onclick = () => {
+            document.getElementById("product-search-input").value =
+              product.name;
+            dropdown.style.display = "none";
+          };
+          dropdown.appendChild(dropdownItem);
+        });
+
+        dropdown.style.display = "block";
+  
+      } else {
+        // Display no results message
+        resultsContainer.innerHTML = "<p>No matching products found.</p>";
+      }
+    } catch (error) {
+      console.error("Error fetching products:", error);
+      resultsContainer.innerHTML =
+        "<p>Error loading products. Please try again later.</p>";
+    }
   }
-}
-
 
   // Initialize cart count on page load
   document.addEventListener("DOMContentLoaded", updateCartCount);
