@@ -377,8 +377,14 @@ def view_orders():
     if not current_user.is_authenticated:
         return redirect(url_for('login'))
     
+    if current_user.isAdmin is True:
+        user_orders=Orders.query.all()
+
+    else:
+        user_orders = Orders.query.filter_by(email=current_user.email).all()
+    
     # Fetch the orders associated with the logged-in user
-    user_orders = Orders.query.filter_by(email=current_user.email).all()
+    
     for order in user_orders:
         order.orderedproducts = json.loads(order.orderedproducts) if order.orderedproducts else []
     print(user_orders)
@@ -399,6 +405,21 @@ def delete_order(order_id):
         db.session.commit()
         flash("Order deleted successfully.", "success")
         return jsonify({"success": True, "message": "Order deleted."}), 200
+    else:
+        return jsonify({"success": False, "message": "Order not found."}), 404
+
+@app.route("/delivered/<int:order_id>", methods=['POST'])
+def delivered_order(order_id):
+    if not current_user.is_authenticated:
+        return redirect(url_for('login'))
+    
+    # Fetch the order by ID
+    order = Orders.query.get(order_id)
+    if order:
+        order.isDelivered=True
+        db.session.commit()
+        flash("Order Marked as Delivered successfully.", "success")
+        return jsonify({"success": True, "message": "Order Marked as Delivered successfully"}), 200
     else:
         return jsonify({"success": False, "message": "Order not found."}), 404
 
